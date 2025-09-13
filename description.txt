@@ -1,0 +1,16 @@
+------------------------------------------  Lesson 0
+https://youtu.be/ksl__eNjpdo
+
+------------------------- install nest
+npm i -g @nestjs/cli
+
+------------------------create new project 
+nest new 00-start
+
+yarn install
+
+
+
+
+------------------------------------------
+00 : 14 : 49
