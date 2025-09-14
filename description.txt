@@ -21,5 +21,11 @@ yarn install
 https://youtu.be/iWM9dIwWZDk
 
 
+dto -> service -> controller ->  module -> app.modele 
+
 ---------------------------------------------------
-00 : 15 : 36
+
+yarn start:dev
+
+---------------------------------------------------
+00 : 19 : 13
