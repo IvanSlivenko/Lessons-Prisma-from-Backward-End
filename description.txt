@@ -45,8 +45,11 @@ yarn add express-basic-auth
 
 
 
+yarn add prisma @prisma/client 
+
+
 ---------------------------------------------------
-00 : 54 : 15
+00 : 58 : 32
 
 
 
