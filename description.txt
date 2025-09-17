@@ -44,12 +44,14 @@ https://youtu.be/wf0jVijlfhU
 yarn add express-basic-auth
 
 
-
+-------------------------------------------------------------- Prisma 58 : 30 
 yarn add prisma @prisma/client 
+
+yarn prisma init
 
 
 ---------------------------------------------------
-00 : 58 : 32
+01 : 00 : 53
 
 
 
