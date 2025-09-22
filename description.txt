@@ -49,35 +49,19 @@ yarn add prisma @prisma/client
 
 yarn prisma init
 
-
-
-
-
-=======================================================
-git status
-git add .
-git commit -m "20-09-2025-11-12"
-git push origin main
-
-=======================================================
-
-
----------------------------------------------------
----------------------------------------------------
-
-yarn start:dev
-
-
-docker exec -it database psql -U root -c "CREATE DATABASE \"music-store\";"
-docker exec -it database psql -U root -d music-store -c "GRANT ALL PRIVILEGES ON DATABASE \"music-store\" TO root;"
-
-
-docker exec -it database psql -U root -d music-store -c "\conninfo"
-
-yarn prisma generate
 yarn run migrate:dev
 
 
 
+
+
+
+---------------------------------------------------
+
+yarn start:dev
+
 ---------------------------------------------------
 01 : 06 : 14
+
+01 : 15 : 23
+

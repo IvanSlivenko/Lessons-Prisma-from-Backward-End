@@ -1,0 +1,37 @@
+
+terminal powershell
+==============================
+
+net start | findstr /i postgresql -------------------- знайти сервіс postgresql
+
+net start postgresql-x64-16 -------------------------- запустити сервіс postgresql
+
+
+psql -U postgres -d postgres  ------------------------ зайти в postgresql
+
+
+CREATE DATABASE music_store ------------------------- створити базу данних
+
+
+\l -------------------------------------------------- перевірити бази данних
+
+\q -------------------------------------------------- вихід з postgresql
+
+netstat -ano | findstr 5433 ------------------------- перевірка порта
+
+
+==================================
+postgresql global
+
+port = 5433
+user = postgres
+password = admin
+
+==================================
+
+
+
+
+
+
+
