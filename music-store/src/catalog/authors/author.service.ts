@@ -1,4 +1,8 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  NotImplementedException,
+} from '@nestjs/common';
 import {
   CreateAuthorDTO,
   ReadAuthorDTO,
@@ -18,10 +22,23 @@ export class AuthorsService {
     );
   }
 
-  getOne(authorId: string): Promise<ReadAuthorDTO> {
-    throw new NotImplementedException(
-      `Method getOne not implemented ${authorId}`,
-    );
+  async getOne(authorId: string): Promise<ReadAuthorDTO> {
+    const author = await this.prisma.author.findFirst({
+      where: { id: authorId },
+    });
+    if (!author) {
+      throw new NotFoundException('Author not found');
+    }
+    return {
+      id: author.id,
+      name: author.name,
+      country: author.country,
+      description: author.description,
+      photo: author.photo,
+      dateOfBirth: author.dateOfBirth,
+      dateOfDeath: author.dateOfDeath,
+      albumsTotal: 0, // TODO Map albums
+    };
   }
 
   async create(data: CreateAuthorDTO): Promise<string> {
