@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   NotImplementedException,
@@ -16,10 +17,16 @@ import { randomUUID } from 'crypto';
 export class AuthorsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getMany(query: ReadManyAuthorsQueryDTO): Promise<ReadManyAuthorsDTO> {
-    throw new NotImplementedException(
-      `Method getMany not implemented ${JSON.stringify(query)}`,
-    );
+  async getMany(query: ReadManyAuthorsQueryDTO): Promise<ReadManyAuthorsDTO> {
+    const authors = await this.prisma.author.findMany({});
+    if (!authors) {
+      throw new NotFoundException('Authors not found');
+    }
+
+    return authors;
+    // throw new NotImplementedException(
+    //   `Method getMany not implemented ${JSON.stringify(query)}`,
+    // );
   }
 
   async getOne(authorId: string): Promise<ReadAuthorDTO> {
@@ -42,13 +49,19 @@ export class AuthorsService {
   }
 
   async create(data: CreateAuthorDTO): Promise<string> {
+    await this.checkName(data.name);
     const { id } = await this.prisma.author.create({
       data: { ...data, id: randomUUID() },
     });
     return id;
   }
 
-  update(authorId: string, data: CreateAuthorDTO): Promise<void> {
+  async update(authorId: string, data: CreateAuthorDTO): Promise<void> {
+    await this.checkName(data.name, authorId);
+    await this.prisma.author.update({
+      where: { id: authorId },
+      data,
+    });
     console.log(data);
     throw new NotImplementedException(
       `Method update not implemented ${authorId}`,
@@ -59,5 +72,15 @@ export class AuthorsService {
     throw new NotImplementedException(
       `Method delete not implemented ${authorId}`,
     );
+  }
+  private async checkName(name: string, authorId?: string): Promise<void> {
+    const id = authorId ? { not: authorId } : undefined;
+    const existingOne = await this.prisma.author.findFirst({
+      where: { name: { equals: name, mode: 'insensitive' }, id },
+    });
+    if (existingOne) {
+      // 409
+      throw new ConflictException(`Author ${name} alread exist`);
+    }
   }
 }
