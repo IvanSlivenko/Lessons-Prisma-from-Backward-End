@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -48,6 +50,7 @@ export class AuthorsController {
   }
 
   @Delete(':authorId')
+  @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param() { authorId }: GetAuthorParams): Promise<void> {
     return this.service.delete(authorId);
   }

@@ -16,6 +16,20 @@ model Author {
   photo       String    @db.VarChar(500)
   dateOfBirth DateTime  @map("date_of_birth") @db.Timestamptz()
   dateOfDeath DateTime? @map("date_of_death") @db.Timestamptz()
+  Album       Album[]
 
   @@map("author")
+}
+
+model Album {
+  id          String   @id @default(uuid()) @db.Uuid
+  authorId    String   @map("author_id") @db.Uuid
+  name        String   @unique @db.VarChar(250)
+  description String   @db.VarChar(1000)
+  cover       String   @db.VarChar(500)
+  date        DateTime @db.Timestamptz()
+
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("album")
 }
