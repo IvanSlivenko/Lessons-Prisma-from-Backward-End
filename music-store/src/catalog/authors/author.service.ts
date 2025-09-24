@@ -2,7 +2,6 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  NotImplementedException,
 } from '@nestjs/common';
 import {
   CreateAuthorDTO,
@@ -12,21 +11,34 @@ import {
 } from './dto';
 import { PrismaService } from 'src/prisma';
 import { randomUUID } from 'crypto';
+import { Prisma } from 'generated/prisma';
+import { ReadAuthorsMapper } from './mappers';
 
 @Injectable()
 export class AuthorsService {
+  private readonly mapper = new ReadAuthorsMapper();
+
   constructor(private readonly prisma: PrismaService) {}
 
   async getMany(query: ReadManyAuthorsQueryDTO): Promise<ReadManyAuthorsDTO> {
-    const authors = await this.prisma.author.findMany({});
-    if (!authors) {
+    const name: Prisma.StringFilter | undefined = query.search
+      ? { contains: query.search, mode: 'insensitive' }
+      : undefined;
+
+    const count = await this.prisma.author.count({
+      where: { name },
+    });
+    const data = await this.prisma.author.findMany({
+      take: query.take,
+      skip: query.skip,
+      where: {
+        name,
+      },
+    });
+    if (data.length === 0) {
       throw new NotFoundException('Authors not found');
     }
-
-    return authors;
-    // throw new NotImplementedException(
-    //   `Method getMany not implemented ${JSON.stringify(query)}`,
-    // );
+    return this.mapper.mapMany(count, data);
   }
 
   async getOne(authorId: string): Promise<ReadAuthorDTO> {
@@ -36,16 +48,7 @@ export class AuthorsService {
     if (!author) {
       throw new NotFoundException('Author not found');
     }
-    return {
-      id: author.id,
-      name: author.name,
-      country: author.country,
-      description: author.description,
-      photo: author.photo,
-      dateOfBirth: author.dateOfBirth,
-      dateOfDeath: author.dateOfDeath,
-      albumsTotal: 0, // TODO Map albums
-    };
+    return this.mapper.mapOne(author);
   }
 
   async create(data: CreateAuthorDTO): Promise<string> {
@@ -62,17 +65,12 @@ export class AuthorsService {
       where: { id: authorId },
       data,
     });
-    console.log(data);
-    throw new NotImplementedException(
-      `Method update not implemented ${authorId}`,
-    );
   }
 
-  delete(authorId: string): Promise<void> {
-    throw new NotImplementedException(
-      `Method delete not implemented ${authorId}`,
-    );
+  async delete(authorId: string): Promise<void> {
+    await this.prisma.author.delete({ where: { id: authorId } });
   }
+
   private async checkName(name: string, authorId?: string): Promise<void> {
     const id = authorId ? { not: authorId } : undefined;
     const existingOne = await this.prisma.author.findFirst({
