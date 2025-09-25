@@ -1,6 +1,17 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import {
+  CreateAlbumDTO,
   GetAlbumParams,
   ReadAlbumDTO,
   ReadManyAlbumsDTO,
@@ -18,5 +29,17 @@ export class AlbumsController {
   @Get(':albumId')
   getOne(@Param() { albumId }: GetAlbumParams): Promise<ReadAlbumDTO> {
     return this.service.getOne(albumId);
+  }
+
+  @Post()
+  async create(@Body() data: CreateAlbumDTO): Promise<ReadAlbumDTO> {
+    const id = await this.service.create(data);
+    return this.service.getOne(id);
+  }
+
+  @Delete(':albumId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param() { albumId }: GetAlbumParams): Promise<void> {
+    return this.service.delete(albumId);
   }
 }

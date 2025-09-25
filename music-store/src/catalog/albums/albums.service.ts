@@ -58,14 +58,14 @@ export class AlbumsService {
 
   async update(albumId: string, data: CreateAlbumDTO): Promise<void> {
     await this.checkName(data.name);
-    await this.prisma.author.update({
+    await this.prisma.album.update({
       where: { id: albumId },
       data,
     });
   }
 
   async delete(albumId: string): Promise<void> {
-    await this.prisma.author.delete({ where: { id: albumId } });
+    await this.prisma.album.delete({ where: { id: albumId } });
   }
 
   private async checkName(name: string, albumId?: string): Promise<void> {
