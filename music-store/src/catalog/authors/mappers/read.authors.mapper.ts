@@ -1,8 +1,14 @@
 import { Author } from 'generated/prisma';
 import { ReadAuthorDTO, ReadManyAuthorsDTO } from '../dto';
 
+type AuthorData = Author & {
+  _count: {
+    Album: number;
+  };
+};
+
 export class ReadAuthorsMapper {
-  public mapOne(author: Author): ReadAuthorDTO {
+  public mapOne(author: AuthorData): ReadAuthorDTO {
     return {
       id: author.id,
       name: author.name,
@@ -11,10 +17,10 @@ export class ReadAuthorsMapper {
       photo: author.photo,
       dateOfBirth: author.dateOfBirth,
       dateOfDeath: author.dateOfDeath,
-      albumsTotal: 0, // TODO Map albums
+      albumsTotal: author._count.Album, // TODO Map albums
     };
   }
-  public mapMany(count: number, data: Author[]): ReadManyAuthorsDTO {
+  public mapMany(count: number, data: AuthorData[]): ReadManyAuthorsDTO {
     return {
       count,
       data: data.map((one) => this.mapOne(one)),

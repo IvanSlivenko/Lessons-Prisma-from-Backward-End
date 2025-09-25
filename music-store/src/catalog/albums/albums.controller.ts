@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
@@ -35,6 +36,15 @@ export class AlbumsController {
   async create(@Body() data: CreateAlbumDTO): Promise<ReadAlbumDTO> {
     const id = await this.service.create(data);
     return this.service.getOne(id);
+  }
+
+  @Put(':albumId')
+  async update(
+    @Param() { albumId }: GetAlbumParams,
+    @Body() data: CreateAlbumDTO,
+  ): Promise<ReadAlbumDTO> {
+    await this.service.update(albumId, data);
+    return this.service.getOne(albumId);
   }
 
   @Delete(':albumId')
