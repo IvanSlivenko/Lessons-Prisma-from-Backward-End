@@ -10,7 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { AuthorsService } from './author.service';
+import { AuthorsService } from './authors.service';
 import {
   CreateAuthorDTO,
   GetAuthorParams,

@@ -34,6 +34,8 @@ export class AuthorsService {
       where: {
         name,
       },
+      orderBy: { name: 'asc' },
+      include: { _count: { select: { Album: true } } },
     });
     if (data.length === 0) {
       throw new NotFoundException('Authors not found');
@@ -44,6 +46,7 @@ export class AuthorsService {
   async getOne(authorId: string): Promise<ReadAuthorDTO> {
     const author = await this.prisma.author.findFirst({
       where: { id: authorId },
+      include: { _count: { select: { Album: true } } },
     });
     if (!author) {
       throw new NotFoundException('Author not found');
@@ -78,7 +81,7 @@ export class AuthorsService {
     });
     if (existingOne) {
       // 409
-      throw new ConflictException(`Author ${name} alread exist`);
+      throw new ConflictException(`Author ${name} already exist`);
     }
   }
 }
